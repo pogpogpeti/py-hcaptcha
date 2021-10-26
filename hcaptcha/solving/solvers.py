@@ -28,7 +28,7 @@ class Solver:
 
         elif isinstance(self._database, Mapping):
             value = self._database.get(tile.custom_id, 0)
-            self._database[tile.custom_id] += value + incr_by
+            self._database[tile.custom_id] = value + incr_by
     
     def solve(self, challenge: Challenge):
         prefixes = [
