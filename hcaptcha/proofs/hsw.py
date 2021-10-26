@@ -3,6 +3,7 @@ import multiprocessing
 import threading
 import subprocess
 import random
+import os
 import time
 import socketio
 
@@ -26,19 +27,19 @@ if is_main_process():
         with open("hcaptcha-js/hsw.js") as fp:
             code = fp.read()
         
-        return f"""
+        return """
         <html>
         <head></head>
         <body>
             <h1>OK</h1>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-            <script>{code}</script>
+            <script>""" + code +"""</script>
             <script type="text/javascript" charset="utf-8">
                 var socket = io()
-                socket.on('request', async function(data) {{
+                socket.on('request', async function(data) {
                     let token = await hsw(data)
                     socket.emit('response', token)
-                }})
+                })
             </script>
         </body>
         </html>
@@ -51,17 +52,25 @@ if is_main_process():
         kwargs={"port": 9932}
         ).start()
 
-    info = subprocess.STARTUPINFO()
-    info.dwFlags = subprocess.STARTF_USESHOWWINDOW
-    info.wShowWindow = 0
-    browser = subprocess.Popen([
-        "C:/Program Files/Google/Chrome/Application/chrome.exe",
-        "--start-maximized",
-        "--disable-gpu",
-        "--new-window",
-        "-incognito",
-        "http://localhost:9932/"],
-        startupinfo=info)
+    if os.name == "nt":
+        subprocess.call(["taskkill", "/f", "/im", "chrome.exe"])
+        browser = subprocess.Popen([
+            os.environ["PROGRAMFILES"] + "/Google/Chrome/Application/chrome.exe",
+            "--start-maximized",
+            "--disable-gpu",
+            "--new-window",
+            "-incognito",
+            "http://localhost:9932/"])
+    
+    else:
+        subprocess.call(["pkill", "-9", "chrome"])
+        browser = subprocess.Popen([
+            "google-chrome",
+            "--start-maximized",
+            "--disable-gpu",
+            "--new-window",
+            "-incognito",
+            "http://localhost:9932/"])
 
 sio = socketio.Client()
 lock = multiprocessing.Lock()
