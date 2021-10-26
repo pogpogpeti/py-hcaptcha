@@ -61,7 +61,7 @@ if is_main_process():
         "--new-window",
         "-incognito",
         "http://localhost:9932/"],
-        starupinfo=info)
+        startupinfo=info)
 
 sio = socketio.Client()
 lock = multiprocessing.Lock()
