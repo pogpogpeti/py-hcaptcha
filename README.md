@@ -47,7 +47,7 @@ from hcaptcha.challenges import Challenge
 from hcaptcha.solving import Solver
 from redis import Redis
 
-WORKER_COUNT = 16
+WORKER_COUNT = 4
 THREAD_COUNT = 50
 
 def worker(proxy_list):
