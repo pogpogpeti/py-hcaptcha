@@ -1,9 +1,7 @@
 from .base import Agent
-from typing import Literal
-from urllib.parse import urlsplit, urlencode
+from urllib.parse import urlsplit
 from http.client import HTTPSConnection
 import random
-import time
 import json
 
 def latest_chrome_agent():
@@ -14,30 +12,32 @@ def latest_chrome_agent():
 
 class ChromeAgent(Agent):
     user_agent = latest_chrome_agent()
-    header_order = {
-        "host": 0,
-        "connection": 1,
-        "content-length": 2.1,
-        "sec-ch-ua": 2,
-        "cache-control": 3,
-        "content-type": 4,
-        "sec-ch-ua-mobile": 5,
-        "user-agent": 6,
-        "sec-ch-ua-platform": 7,
-        "accept": 8,
-        "origin": 9,
-        "sec-fetch-site": 10,
-        "sec-fetch-mode": 11,
-        "sec-fetch-dest": 12,
-        "referer": 13,
-        "accept-encoding": 14,
-        "accept-language": 15
-    }
     chrome_version = user_agent.split("Chrome/", 1)[1].split(" ", 1)[0]
+    chrome_version_short = chrome_version.split(".", 1)[0]
+    header_order = [
+        "host",
+        "connection",
+        "content-length",
+        "sec-ch-ua",
+        "cache-control",
+        "content-type",
+        "sec-ch-ua-mobile",
+        "user-agent",
+        "sec-ch-ua-platform",
+        "accept",
+        "origin",
+        "sec-fetch-site",
+        "sec-fetch-mode",
+        "sec-fetch-dest",
+        "referer",
+        "accept-encoding",
+        "accept-language",
+    ]
 
     def __init__(self):
         super().__init__()
         self.screen_size, self.avail_screen_size = random.choice([
+            ((1920, 1080), (1920, 1040)),
             ((2560, 1440), (2560, 1400))
         ])
         self.cpu_count = random.choice([2, 4, 8, 16])
@@ -104,8 +104,8 @@ class ChromeAgent(Agent):
             "xr": {},
             "userAgentData": {
                 "brands": [
-                    {"brand": "Chromium", "version": self.chrome_version.split(".", 1)[0]},
-                    {"brand": "Google Chrome", "version": self.chrome_version.split(".", 1)[0]},
+                    {"brand": "Chromium", "version": self.chrome_version_short},
+                    {"brand": "Google Chrome", "version": self.chrome_version_short},
                     {"brand": ";Not A Brand", "version": "99"}
                 ],
                 "mobile": False
@@ -118,26 +118,6 @@ class ChromeAgent(Agent):
                 "internal-pdf-viewer"
             ]
         }
-
-    def epoch(self, ms: int = True):
-        t = time.time() * 1000
-        t += self._epoch_delta
-        if not ms: t /= 1000
-        return int(t)
-
-    def epoch_travel(self, delta: float, ms: bool = True):
-        if not ms: delta *= 1000
-        self._epoch_delta += delta
-
-    def epoch_wait(self):
-        time.sleep(self._epoch_delta/1000)
-        self._epoch_delta = 0
-
-    def json_encode(self, data: Literal) -> str:
-        return json.dumps(data, separators=(",", ":"))
-
-    def url_encode(self, data: dict) -> str:
-        return urlencode(data)
     
     def format_headers(
         self,
@@ -154,7 +134,7 @@ class ChromeAgent(Agent):
 
         headers["Host"] = p_url.hostname
         headers["Connection"] = "keep-alive"
-        headers["sec-ch-ua"] = f'"Chromium";v="{self.chrome_version.split(".", 1)[0]}", "Google Chrome";v="{self.chrome_version.split(".", 1)[0]}", ";Not A Brand";v="99"'
+        headers["sec-ch-ua"] = f'"Chromium";v="{self.chrome_version_short}", "Google Chrome";v="{self.chrome_version_short}", ";Not A Brand";v="99"'
         headers["sec-ch-ua-mobile"] = "?0"
         headers["User-Agent"] = self.user_agent
         headers["sec-ch-ua-platform"] = '"Windows"'
@@ -186,6 +166,8 @@ class ChromeAgent(Agent):
 
         headers = dict(sorted(
             headers.items(),
-            key=lambda x: self.header_order.get(x[0].lower(), 9999)
+            key=lambda x: x[0].lower() in self.header_order \
+                          and self.header_order.index(x[0].lower()) \
+                          or 9999
         ))
         return headers
