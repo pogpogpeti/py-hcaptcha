@@ -43,7 +43,7 @@ It may take a lot of attempts to solve a challenge, but this'll become better as
 import multiprocessing
 import threading
 import itertools
-from hcaptcha.challenges import Challenge
+from hcaptcha import Challenge
 from hcaptcha.solving import Solver
 from redis import Redis
 
