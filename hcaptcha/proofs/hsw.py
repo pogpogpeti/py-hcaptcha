@@ -76,7 +76,7 @@ proof_cache = None
 def get_proof(data):
     global proof_cache
     if proof_cache and 2 > (time.time() - proof_cache[1]):
-        return proof_cache[0] + "".join(random.choices("qwrty", k=6))
+        return proof_cache[0] + "".join(random.choices("qwrty", k=5))
 
     with lock:
         sio.emit("request", data)
