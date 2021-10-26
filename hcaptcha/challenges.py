@@ -119,7 +119,7 @@ class Challenge:
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
         self._top.record()
-        self._top.set_data("dr", "") # refferer
+        self._top.set_data("dr", "") # referrer
         self._top.set_data("inv", False)
         self._top.set_data("sc", self._agent.get_screen_properties())
         self._top.set_data("nv", self._agent.get_navigator_properties())

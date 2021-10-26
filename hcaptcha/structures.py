@@ -1,5 +1,7 @@
 import math
 
+# Translated from hcaptcha.js.
+
 class EventRecorder:
     def __init__(self, agent):
         self._agent = agent

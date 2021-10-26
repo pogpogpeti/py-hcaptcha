@@ -6,5 +6,4 @@ def get_proof(type, data):
         return hsl.get_proof(data)
     elif type == "hsw":
         return hsw.get_proof(data)
-    else:
-        raise Exception(f"Unrecognized proof type '{type}'")
+    raise Exception(f"Unrecognized proof type '{type}'")
