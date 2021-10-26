@@ -30,7 +30,7 @@ class Solver:
             value = self._database.get(tile.custom_id, 0)
             self._database[tile.custom_id] = value + incr_by
     
-    def solve(self, challenge: Challenge):
+    def solve(self, challenge: Challenge) -> str:
         prefixes = [
             "Please click each image containing a ",
             "Please click each image containing an ",
