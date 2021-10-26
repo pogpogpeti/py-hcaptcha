@@ -117,3 +117,5 @@ js
 hcaptcha-js
 test.py
 example.py
+proxies.txt
+solver_test.py
