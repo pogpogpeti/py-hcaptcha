@@ -1,10 +1,8 @@
 # py-hcaptcha
 An unofficial wrapper for interacting with hCaptcha challenges.
 
-* Device must be running Windows with Google Chrome installed.
-* Some parts of the code need to be changed frequently and therefore may be written in a sloppy way.
-
 # Install
+* Device must be have Google Chrome installed.
 ```bash
 pip install git+https://github.com/h0nde/py-hcaptcha
 ```
@@ -37,7 +35,7 @@ except hcaptcha.ChallengeError as err:
 ```
 
 # Solving
-The module comes with a built-in solver, utilizing a simple bruteforce method. `Solver` accepts a Redis or a dict-like object as the database parameter.
+The module comes with a built-in solver, utilizing a simple-but-efficient bruteforce method. `Solver` accepts a Redis or a dict-like object as the database parameter.
 
 It may take a lot of attempts to solve a challenge, but this'll become better as the database grows.
 
