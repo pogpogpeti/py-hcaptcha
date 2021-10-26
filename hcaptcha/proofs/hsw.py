@@ -72,12 +72,11 @@ def on_response(token):
     proof = token
     event.set()
 
-proof_cache = None
+#proof_cache = None
 def get_proof(data):
-    global proof_cache
-
-    if proof_cache and 2 > (time.time() - proof_cache[1]):
-        return proof_cache[0] + "".join(random.choices("qwerty", k=6))
+    #global proof_cache
+    #if proof_cache and 2 > (time.time() - proof_cache[1]):
+    #    return proof_cache[0] + "".join(random.choices("qwerty", k=6))
 
     with lock:
         sio.emit("request", data)
