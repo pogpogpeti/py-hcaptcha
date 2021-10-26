@@ -2,6 +2,7 @@ from ..challenges import Challenge
 from .exceptions import *
 from typing import Union
 from collections import Mapping
+from hashlib import sha1
 import random
 import redis
 
@@ -50,7 +51,7 @@ class Solver:
         
         for tile in challenge.tiles:
             image = tile.get_image(raw=True)
-            image_hash = hash(image)
+            image_hash = sha1(image).hexdigest()
             tile.custom_id = f"{variation}|{image_hash}"
             tile.score = self._get_tile_score(tile)
             tile.selected = False
