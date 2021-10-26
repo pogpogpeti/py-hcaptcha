@@ -240,6 +240,10 @@ class Challenge:
         if data.get("pass"):
             self.token = data["generated_pass_UUID"]
             return
+
+        if data.get("success") == False:
+            raise RequestRejected(
+                "Challenge creation request was rejected.")
         
         self.id = data["key"]
         self.config = data["request_config"]
