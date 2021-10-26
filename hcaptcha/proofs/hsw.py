@@ -2,6 +2,8 @@ from ..utils import is_main_process
 import multiprocessing
 import threading
 import subprocess
+import random
+import time
 import socketio
 
 if is_main_process():
@@ -70,9 +72,16 @@ def on_response(token):
     proof = token
     event.set()
 
+proof_cache = None
 def get_proof(data):
+    global proof_cache
+
+    if proof_cache and 2 > (time.time() - proof_cache[1]):
+        return proof_cache[0] + "".join(random.choices("qwerty", k=6))
+
     with lock:
         sio.emit("request", data)
         event.wait(timeout=5)
         event.clear()
+        proof_cache = (proof, time.time())
         return proof
