@@ -73,6 +73,6 @@ def on_response(token):
 def get_proof(data):
     with lock:
         sio.emit("request", data)
-        event.wait()
+        event.wait(timeout=15)
         event.clear()
         return proof
