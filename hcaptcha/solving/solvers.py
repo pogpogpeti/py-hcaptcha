@@ -31,7 +31,10 @@ class Solver:
             self._database[tile.custom_id] += value + incr_by
     
     def solve(self, challenge: Challenge):
-        prefix_text = "Please click each image containing a "
+        prefixes = [
+            "Please click each image containing a ",
+            "Please click each image containing an ",
+        ]
 
         if challenge.token:
             return challenge.token
@@ -40,12 +43,18 @@ class Solver:
             raise UnsupportedChallenge(
                 f"Unsupported challenge mode: {challenge.mode}")
 
-        if not challenge.question["en"].startswith(prefix_text):
+        prefix = None
+        for _prefix in prefixes:
+            if challenge.question["en"].startswith(_prefix):
+                prefix = _prefix
+                break
+
+        if not prefix:
             raise UnsupportedChallenge(
                 f"Unsupported challenge question: {challenge.question['en']}")
         
         variation = challenge.question["en"] \
-            .replace(prefix_text, "") \
+            .replace(prefix, "") \
             .rstrip(".") \
             .lower()
         
