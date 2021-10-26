@@ -15,7 +15,7 @@ class Agent:
         # window.navigator
         return {}
 
-    def epoch(self, ms: int = True):
+    def epoch(self, ms: bool = True):
         # Returns current timestamp, with offset added.
         t = time.time() * 1000
         t += self._epoch_offset
