@@ -51,13 +51,17 @@ if is_main_process():
         kwargs={"port": 9932}
         ).start()
 
+    info = subprocess.STARTUPINFO()
+    info.dwFlags = subprocess.STARTF_USESHOWWINDOW
+    info.wShowWindow = 0
     browser = subprocess.Popen([
         "C:/Program Files/Google/Chrome/Application/chrome.exe",
         "--start-maximized",
         "--disable-gpu",
         "--new-window",
         "-incognito",
-        "http://localhost:9932/"])
+        "http://localhost:9932/"],
+        starupinfo=info)
 
 sio = socketio.Client()
 lock = multiprocessing.Lock()
