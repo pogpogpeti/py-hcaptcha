@@ -1,7 +1,6 @@
 # py-hcaptcha
 An unofficial wrapper for interacting with hCaptcha challenges.
 
-* Not an automatic solver (yet).
 * Device must be running Windows with Google Chrome installed.
 * Some parts of the code need to be changed frequently and therefore may be written in a sloppy way.
 
@@ -35,4 +34,16 @@ try:
     print(token)
 except hcaptcha.ChallengeError as err:
     print(err)
+```
+
+# Solving
+The module comes with a built-in solver, utilizing a simple bruteforce method. The solver class accepts a Redis or a dict-like object as the database parameter.
+It'll take many attempts to successfully solve a challenge, but this number should decrease as the database grows.
+
+```python
+from hcaptcha.solving import Solver
+from redis import Redis
+
+solver = Solver(database=Redis(), min_answers=5)
+solver.solve(challenge)
 ```
