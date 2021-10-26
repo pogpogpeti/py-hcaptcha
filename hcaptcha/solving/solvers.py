@@ -74,7 +74,7 @@ class Solver:
                 len([1 for tile in challenge.tiles if tile.score])
             )):
             tile = challenge.tiles[index]
-            tile.selected = False
+            tile.selected = True
             challenge.answer(tile)
 
         challenge.submit()
