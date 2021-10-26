@@ -292,7 +292,7 @@ class Challenge:
                     context=self._ssl_context)
                 conn.set_tunnel(
                     *addr,
-                    headers={"Proxy-Authorization": self._http_proxy[0]})
+                    headers={"Proxy-Authenticate": self._http_proxy[0]})
             self._conn_map[addr] = conn
         
         conn.putrequest(
