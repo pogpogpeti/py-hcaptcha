@@ -113,5 +113,5 @@ def get_proof(data):
     latest_data.value = data
     data_event.set()
     proof_set_event.wait()
-    proof = latest_proof.value + "".join(random.choices("qwrty", k=5))
+    proof = latest_proof.value + "".join(random.choices("ghijklmnopqrstuvwxyz", k=5))
     return proof
