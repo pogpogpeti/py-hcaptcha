@@ -5,23 +5,20 @@ import random
 import subprocess
 import threading
 import ctypes
+import time
 
-latest_data = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
-latest_proof = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
+latest_data = multiprocessing.Value(ctypes.c_wchar_p, "")
+latest_proof = multiprocessing.Value(ctypes.c_wchar_p, "")
 data_event = multiprocessing.Event()
-proof_event = multiprocessing.Event()
 proof_set_event = multiprocessing.Event()
 
 if is_main_process():
     from flask import Flask
     from flask_socketio import SocketIO
-    
+
     app = Flask(__name__)
     sio_server = SocketIO(app)
-
-    @sio_server.on("request")
-    def request_passer(data):
-        sio_server.emit("request", data)
+    proof_event = threading.Event()
 
     @sio_server.on("response")
     def response_passer(token):
@@ -45,10 +42,6 @@ if is_main_process():
 
                 socket.on('connect', async function() {
                     setTimeout(() => location.reload(), 10000)
-                })
-
-                socket.on('connect_error', async function() {
-                    location.reload()
                 })
 
                 socket.on('request', async function(data) {
@@ -93,13 +86,15 @@ if is_main_process():
                 data_event.wait()
                 data_event.clear()
                 sio_server.emit("request", latest_data.value)
-                proof_event.wait(timeout=5)
+                if not proof_event.wait(timeout=5):
+                    continue
                 proof_event.clear()
                 proof_set_event.set()
             except:
                 pass
 
     threading.Thread(target=proof_updater).start()
+    time.sleep(5)
             
 def get_proof(data):
     latest_data.value = data
