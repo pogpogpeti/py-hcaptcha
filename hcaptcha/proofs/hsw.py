@@ -1,29 +1,24 @@
 from ..utils import is_main_process
-import multiprocessing
 import os
 import random
+import socketio
 import subprocess
 import threading
-import ctypes
-import time
-
-latest_data = multiprocessing.Value(ctypes.c_wchar_p, "")
-latest_proof = multiprocessing.Value(ctypes.c_wchar_p, "")
-data_event = multiprocessing.Event()
-proof_set_event = multiprocessing.Event()
 
 if is_main_process():
     from flask import Flask
     from flask_socketio import SocketIO
-
+    
     app = Flask(__name__)
     sio_server = SocketIO(app)
-    proof_event = threading.Event()
+
+    @sio_server.on("request")
+    def request_passer(data):
+        sio_server.emit("request", data)
 
     @sio_server.on("response")
     def response_passer(token):
-        latest_proof.value = token
-        proof_event.set()
+        sio_server.emit("response", token)
 
     @app.route("/")
     def index_view():
@@ -44,10 +39,13 @@ if is_main_process():
                     setTimeout(() => location.reload(), 10000)
                 })
 
+                socket.on('connect_error', async function() {
+                    location.reload()
+                })
+
                 socket.on('request', async function(data) {
                     let token = await hsw(data)
                     socket.emit('response', token)
-                    console.log('sent proof')
                 })
             </script>
         </body>
@@ -81,25 +79,38 @@ if is_main_process():
             "-incognito",
             "http://localhost:9932/"])
 
-    def proof_updater():
-        while True:
-            try:
-                data_event.wait()
-                data_event.clear()
-                sio_server.emit("request", latest_data.value)
-                if not proof_event.wait(timeout=5):
-                    continue
-                proof_event.clear()
-                proof_set_event.set()
-            except Exception as exc:
-                print(f"HSW proof updater thread error: {exc!r}")
+sio = socketio.Client()
+data_event = threading.Event()
+proof_event = threading.Event()
+proof_set_event = threading.Event()
+latest_data = None
+latest_proof = None
 
-    threading.Thread(target=proof_updater).start()
-    time.sleep(5)
-            
+sio.connect("http://localhost:9932")
+
+@sio.on("response")
+def on_response(token):
+    global latest_proof
+    latest_proof = token
+    proof_event.set()
+
+def proof_updater():
+    while True:
+        try:
+            data_event.wait()
+            data_event.clear()
+            sio.emit("request", latest_data)
+            proof_event.wait(timeout=5)
+            proof_event.clear()
+            proof_set_event.set()
+        except:
+            pass
+threading.Thread(target=proof_updater).start()
+
 def get_proof(data):
-    latest_data.value = data
+    global latest_data
+    latest_data = data
     data_event.set()
     proof_set_event.wait()
-    proof = latest_proof.value + "".join(random.choices("ghijklmnopqrstuvwxyz", k=5))
+    proof = latest_proof + "".join(random.choices("ghijklmnopqrstuvwxyz", k=5))
     return proof
