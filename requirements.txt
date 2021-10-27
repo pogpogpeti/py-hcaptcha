@@ -4,5 +4,4 @@ pillow
 flask
 flask-socketio
 python-socketio
-socketio
 redis
