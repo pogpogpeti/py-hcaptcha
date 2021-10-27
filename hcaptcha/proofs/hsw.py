@@ -2,11 +2,15 @@ from ..utils import is_main_process
 import multiprocessing
 import os
 import random
-import socketio
 import subprocess
 import threading
-import time
 import ctypes
+
+latest_data = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
+latest_proof = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
+data_event = multiprocessing.Event()
+proof_event = multiprocessing.Event()
+proof_set_event = multiprocessing.Event()
 
 if is_main_process():
     from flask import Flask
@@ -21,7 +25,8 @@ if is_main_process():
 
     @sio_server.on("response")
     def response_passer(token):
-        sio_server.emit("response", token)
+        latest_proof.value = token
+        proof_event.set()
 
     @app.route("/")
     def index_view():
@@ -82,34 +87,20 @@ if is_main_process():
             "-incognito",
             "http://localhost:9932/"])
 
-sio = socketio.Client()
-latest_data = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
-latest_proof = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
-data_event = multiprocessing.Event()
-proof_event = multiprocessing.Event()
-proof_set_event = multiprocessing.Event()
+    def proof_updater():
+        while True:
+            try:
+                data_event.wait()
+                data_event.clear()
+                sio_server.emit("request", latest_data.value)
+                proof_event.wait(timeout=5)
+                proof_event.clear()
+                proof_set_event.set()
+            except:
+                pass
 
-sio.connect("http://localhost:9932")
-
-@sio.on("response")
-def on_response(token):
-    latest_proof.value = token
-    proof_event.set()
-
-def proof_updater():
-    while True:
-        try:
-            data_event.wait()
-            data_event.clear()
-            sio.emit("request", latest_data.value)
-            proof_event.wait(timeout=5)
-            proof_event.clear()
-            proof_set_event.set()
-        except:
-            pass
-
-threading.Thread(target=proof_updater).start()
-
+    threading.Thread(target=proof_updater).start()
+            
 def get_proof(data):
     latest_data.value = data
     data_event.set()
