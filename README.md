@@ -80,12 +80,12 @@ def thread(solver, proxy_iter):
 
 if __name__ == "__main__":
     with open("proxies.txt") as fp:
-        proxies = fp.read().splitlines()
-        per = int(len(proxies) / WORKER_COUNT)
+        proxy_list = fp.read().splitlines()
+        per = int(len(proxy_list) / WORKER_COUNT)
     
     for num in range(WORKER_COUNT):
         multiprocessing.Process(
             target=worker,
-            args=(proxies[per * num : per * (num + 1)],)
+            args=(proxy_list[per * num : per * (num + 1)],)
         ).start()
 ```
