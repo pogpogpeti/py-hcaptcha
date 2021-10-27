@@ -6,6 +6,7 @@ import socketio
 import subprocess
 import threading
 import time
+import ctypes
 
 if is_main_process():
     from flask import Flask
@@ -82,27 +83,35 @@ if is_main_process():
             "http://localhost:9932/"])
 
 sio = socketio.Client()
-lock = multiprocessing.Lock()
-event = multiprocessing.Event()
-proof = None
+latest_data = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
+latest_proof = multiprocessing.Value(ctypes.c_wchar_p, "ccx")
+data_event = multiprocessing.Event()
+proof_event = multiprocessing.Event()
+proof_set_event = multiprocessing.Event()
 
 sio.connect("http://localhost:9932")
 
 @sio.on("response")
 def on_response(token):
-    global proof
-    proof = token
-    event.set()
+    latest_proof.value = token
+    proof_event.set()
 
-proof_cache = None
+def proof_updater():
+    while True:
+        try:
+            data_event.wait()
+            sio.emit("request", latest_data.value)
+            proof_event.wait(timeout=5)
+            proof_event.clear()
+            proof_set_event.set()
+        except:
+            pass
+
+threading.Thread(target=proof_updater).start()
+
 def get_proof(data):
-    global proof_cache
-    if proof_cache and 2 > (time.time() - proof_cache[1]):
-        return proof_cache[0] + "".join(random.choices("qwrty", k=5))
-
-    with lock:
-        sio.emit("request", data)
-        event.wait(timeout=5)
-        event.clear()
-        proof_cache = (proof, time.time())
-        return proof
+    latest_data.value = data
+    data_event.set()
+    proof_set_event.wait()
+    proof = latest_proof.value + "".join(random.choices("qwrty", k=5))
+    return proof
