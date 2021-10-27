@@ -46,7 +46,7 @@ class Challenge:
         self.config = None
         self.mode = None
         self.question = None
-        self.tiles = None
+        self.tiles = []
 
         self._agent.epoch_travel(-10)
         self._setup_frames()
@@ -234,7 +234,7 @@ class Challenge:
     def _get_proof(self):
         if not self._spec: return
         return get_proof(self._spec["type"], self._spec["req"])
-        
+
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
         self._top.record()
