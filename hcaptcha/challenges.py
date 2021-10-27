@@ -108,70 +108,6 @@ class Challenge:
         self.token = data["generated_pass_UUID"]
         return self.token
 
-    def _setup_frames(self):
-        self._top = EventRecorder(agent=self._agent)
-        self._top.record()
-        self._top.set_data("dr", "") # referrer
-        self._top.set_data("inv", False)
-        self._top.set_data("sc", self._agent.get_screen_properties())
-        self._top.set_data("nv", self._agent.get_navigator_properties())
-        self._top.set_data("exec", False)
-        self._agent.epoch_travel(randint(200, 400))
-
-        self._frame = EventRecorder(agent=self._agent)
-        self._frame.record()
-
-    def _get_proof(self):
-        if not self._spec: return
-        return get_proof(self._spec["type"], self._spec["req"])
-
-    def _simulate_solve(self):
-            total_pages = max(1, int(len(self.tiles)/TILES_PER_PAGE))
-            cursor_pos = (
-                randint(1, 5),
-                randint(300, 350)
-            )
-
-            for page in range(total_pages):
-                page_tiles = self.tiles[page * TILES_PER_PAGE : (page + 1) * TILES_PER_PAGE]
-                for tile in page_tiles:
-                    if not tile in self._answers:
-                        continue
-                    tile_pos = (
-                        (TILE_IMAGE_SIZE[0] * int(tile.index % TILES_PER_ROW))
-                            + TILE_IMAGE_PADDING[0] * int(tile.index % TILES_PER_ROW)
-                            + randint(10, TILE_IMAGE_SIZE[0])
-                            + TILE_IMAGE_START_POS[0],
-                        (TILE_IMAGE_SIZE[1] * int(tile.index / TILES_PER_ROW))
-                            + TILE_IMAGE_PADDING[1] * int(tile.index / TILES_PER_ROW)
-                            + randint(10, TILE_IMAGE_SIZE[1])
-                            + TILE_IMAGE_START_POS[1],
-                    )
-                    for event in gen_mouse_move(cursor_pos, tile_pos, self._agent,
-                            offsetBoundaryX=0, offsetBoundaryY=0, leftBoundary=0,
-                            rightBoundary=FRAME_SIZE[0], upBoundary=FRAME_SIZE[1],
-                            downBoundary=0):
-                        self._frame.record_event("mm", event)
-                    # TODO: add time delay for mouse down and mouse up
-                    self._frame.record_event("md", event)
-                    self._frame.record_event("mu", event)
-                    cursor_pos = tile_pos
-                
-                # click verify/next/skip btn
-                btn_pos = (
-                    VERIFY_BTN_POS[0] + randint(5, 50),
-                    VERIFY_BTN_POS[1] + randint(5, 15),
-                )
-                for event in gen_mouse_move(cursor_pos, btn_pos, self._agent,
-                        offsetBoundaryX=0, offsetBoundaryY=0, leftBoundary=0,
-                        rightBoundary=FRAME_SIZE[0], upBoundary=FRAME_SIZE[1],
-                        downBoundary=0):
-                    self._frame.record_event("mm", event)
-                # TODO: add time delay for mouse down and mouse up
-                self._frame.record_event("md", event)
-                self._frame.record_event("mu", event)
-                cursor_pos = btn_pos
-
     def _validate_config(self):
         data = self._request(
             method="GET",
@@ -294,3 +230,67 @@ class Challenge:
                 self._spec = data["c"]
             
         return data
+
+    def _get_proof(self):
+        if not self._spec: return
+        return get_proof(self._spec["type"], self._spec["req"])
+        
+    def _setup_frames(self):
+        self._top = EventRecorder(agent=self._agent)
+        self._top.record()
+        self._top.set_data("dr", "") # referrer
+        self._top.set_data("inv", False)
+        self._top.set_data("sc", self._agent.get_screen_properties())
+        self._top.set_data("nv", self._agent.get_navigator_properties())
+        self._top.set_data("exec", False)
+        self._agent.epoch_travel(randint(200, 400))
+
+        self._frame = EventRecorder(agent=self._agent)
+        self._frame.record()
+
+    def _simulate_solve(self):
+            total_pages = max(1, int(len(self.tiles)/TILES_PER_PAGE))
+            cursor_pos = (
+                randint(1, 5),
+                randint(300, 350)
+            )
+
+            for page in range(total_pages):
+                page_tiles = self.tiles[page * TILES_PER_PAGE : (page + 1) * TILES_PER_PAGE]
+                for tile in page_tiles:
+                    if not tile in self._answers:
+                        continue
+                    tile_pos = (
+                        (TILE_IMAGE_SIZE[0] * int(tile.index % TILES_PER_ROW))
+                            + TILE_IMAGE_PADDING[0] * int(tile.index % TILES_PER_ROW)
+                            + randint(10, TILE_IMAGE_SIZE[0])
+                            + TILE_IMAGE_START_POS[0],
+                        (TILE_IMAGE_SIZE[1] * int(tile.index / TILES_PER_ROW))
+                            + TILE_IMAGE_PADDING[1] * int(tile.index / TILES_PER_ROW)
+                            + randint(10, TILE_IMAGE_SIZE[1])
+                            + TILE_IMAGE_START_POS[1],
+                    )
+                    for event in gen_mouse_move(cursor_pos, tile_pos, self._agent,
+                            offsetBoundaryX=0, offsetBoundaryY=0, leftBoundary=0,
+                            rightBoundary=FRAME_SIZE[0], upBoundary=FRAME_SIZE[1],
+                            downBoundary=0):
+                        self._frame.record_event("mm", event)
+                    # TODO: add time delay for mouse down and mouse up
+                    self._frame.record_event("md", event)
+                    self._frame.record_event("mu", event)
+                    cursor_pos = tile_pos
+                
+                # click verify/next/skip btn
+                btn_pos = (
+                    VERIFY_BTN_POS[0] + randint(5, 50),
+                    VERIFY_BTN_POS[1] + randint(5, 15),
+                )
+                for event in gen_mouse_move(cursor_pos, btn_pos, self._agent,
+                        offsetBoundaryX=0, offsetBoundaryY=0, leftBoundary=0,
+                        rightBoundary=FRAME_SIZE[0], upBoundary=FRAME_SIZE[1],
+                        downBoundary=0):
+                    self._frame.record_event("mm", event)
+                # TODO: add time delay for mouse down and mouse up
+                self._frame.record_event("md", event)
+                self._frame.record_event("mu", event)
+                cursor_pos = btn_pos
