@@ -44,6 +44,7 @@ class Agent:
     def format_headers(
         self,
         url: str,
+        body: bytes = None,
         headers: dict = {},
         origin_url: str = None,
         sec_site: str = "cross-site",
