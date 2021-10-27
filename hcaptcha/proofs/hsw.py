@@ -47,6 +47,7 @@ if is_main_process():
                 socket.on('request', async function(data) {
                     let token = await hsw(data)
                     socket.emit('response', token)
+                    console.log('sent proof')
                 })
             </script>
         </body>
