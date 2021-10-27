@@ -4,6 +4,7 @@ import random
 import socketio
 import subprocess
 import threading
+import time
 
 if is_main_process():
     from flask import Flask
@@ -103,6 +104,7 @@ def proof_updater():
             proof_event.wait(timeout=5)
             proof_event.clear()
             proof_set_event.set()
+            time.sleep(1)
         except:
             pass
 threading.Thread(target=proof_updater).start()
