@@ -43,7 +43,7 @@ The module comes with a built-in solver, utilizing a simple-but-efficient brutef
 import multiprocessing
 import threading
 import itertools
-from hcaptcha import Challenge
+import hcaptcha
 from hcaptcha.solving import Solver
 from redis import Redis
 
@@ -65,7 +65,7 @@ def thread(solver, proxy_iter):
     while True:
         ch = None
         try:
-            ch = Challenge(
+            ch = hcaptcha.Challenge(
                 site_key="f5561ba9-8f1e-40ca-9b5b-a0b3f719ef34",
                 site_url="https://discord.com/",
                 proxy=next(proxy_iter)
