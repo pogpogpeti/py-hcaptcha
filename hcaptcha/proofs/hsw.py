@@ -40,7 +40,11 @@ if is_main_process():
                 socket.on('connect', async function() {
                     setTimeout(() => location.reload(), 10000)
                 })
-                
+
+                socket.on('connect_error', async function() {
+                    location.reload()
+                })
+
                 socket.on('request', async function(data) {
                     let token = await hsw(data)
                     socket.emit('response', token)
