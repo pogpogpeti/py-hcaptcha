@@ -36,6 +36,11 @@ if is_main_process():
             <script>""" + code +"""</script>
             <script type="text/javascript" charset="utf-8">
                 var socket = io()
+
+                socket.on('connect', async function() {
+                    setTimeout(() => location.reload(), 10000)
+                })
+                
                 socket.on('request', async function(data) {
                     let token = await hsw(data)
                     socket.emit('response', token)
