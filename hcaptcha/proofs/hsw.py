@@ -100,6 +100,7 @@ def proof_updater():
     while True:
         try:
             data_event.wait()
+            data_event.clear()
             sio.emit("request", latest_data.value)
             proof_event.wait(timeout=5)
             proof_event.clear()
