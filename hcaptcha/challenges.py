@@ -1,15 +1,14 @@
-from .constants import *
 from .agents import Agent, random_agent
-from .models import Tile
-from .structures import EventRecorder
-from .proofs import get_proof
+from .constants import *
 from .curves import gen_mouse_move
-from .utils import parse_proxy_string, random_widget_id, latest_version_id
 from .exceptions import *
-from typing import Iterator, List
+from .http_ import HTTPClient
+from .models import Tile
+from .proofs import get_proof
+from .structures import EventRecorder
+from .utils import random_widget_id, latest_version_id
 from random import randint
-from urllib.parse import urlsplit
-from http.client import HTTPSConnection
+from typing import Iterator, List
 import json
 import ssl
 import zlib
@@ -30,24 +29,18 @@ class Challenge:
         site_key: str,
         site_url: str,
         agent: Agent = None,
-        http_proxy: str = None,
-        timeout: float = 5,
-        ssl_context: ssl.SSLContext = _default_ssl_context
+        http_client: HTTPClient = None,
+        **http_kwargs
     ):
-        agent = agent or random_agent()
-
         self._site_key = site_key
         self._site_url = site_url
-        self._site_hostname = urlsplit(site_url).hostname
-        self._agent = agent
-        self._http_proxy = parse_proxy_string(http_proxy)
-        self._timeout = timeout
-        self._ssl_context = ssl_context
-        self._conn_map = {}
-
+        self._site_hostname = site_url.split("://", 1)[1].split("/", 1)[0].lower()
+        self._agent = agent or random_agent()
+        self._http_client = http_client or HTTPClient(**http_kwargs)
         self._widget_id = random_widget_id()
         self._spec = None
         self._answers = []
+
         self.id = None
         self.token = None
         self.config = None
@@ -66,8 +59,7 @@ class Challenge:
         yield from self.tiles
 
     def close(self) -> None:
-        for conn in self._conn_map.values():
-            conn.close()
+        self._http_client.clear()
 
     def answer(self, tile: Tile) -> None:
         assert isinstance(tile, Tile), "Not a tile object."
@@ -276,35 +268,6 @@ class Challenge:
         sec_mode: str = "cors",
         sec_dest: str = "empty"
     ):
-        if isinstance(body, str):
-            body = body.encode()
-        
-        p_url = urlsplit(url)
-        addr = (p_url.hostname.lower(), p_url.port or 443)
-
-        conn = self._conn_map.get(addr)
-        if not conn:
-            if not self._http_proxy:
-                conn = HTTPSConnection(
-                    *addr,
-                    timeout=self._timeout,
-                    context=self._ssl_context)
-            else:
-                conn = HTTPSConnection(
-                    *self._http_proxy[1],
-                    timeout=self._timeout,
-                    context=self._ssl_context)
-                conn.set_tunnel(
-                    *addr,
-                    headers={"Proxy-Authorization": self._http_proxy[0]})
-            self._conn_map[addr] = conn
-        
-        conn.putrequest(
-            method=method,
-            url=p_url.path + (f"?{p_url.query}" if p_url.query else ""),
-            skip_host=True,
-            skip_accept_encoding=True)
-
         headers = self._agent.format_headers(
             url=url,
             body=body,
@@ -314,11 +277,7 @@ class Challenge:
             sec_mode=sec_mode,
             sec_dest=sec_dest)
 
-        for name, value in headers.items():
-            conn.putheader(name, value)
-        conn.endheaders(body)
-
-        resp = conn.getresponse()
+        resp = self._http_client.request(method, url, headers, body)
         data = resp.read()
 
         if (encoding := resp.headers.get("content-encoding")):

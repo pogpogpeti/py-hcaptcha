@@ -1,14 +1,16 @@
+from ..http_ import HTTPClient
 from .base import Agent
 from urllib.parse import urlsplit
-from http.client import HTTPSConnection
-import random
 import json
+import random
 
 def latest_chrome_agent():
-    conn = HTTPSConnection("jnrbsn.github.io", 443)
-    conn.request("GET", "/user-agents/user-agents.json")
-    data = json.loads(conn.getresponse().read())
-    return data[0]
+    with HTTPClient() as http:
+        resp = http.request(
+            method="GET",
+            url="https://jnrbsn.github.io/user-agents/user-agents.json")
+        data = json.loads(resp.read())
+        return data[0]
 
 class ChromeAgent(Agent):
     user_agent = latest_chrome_agent()

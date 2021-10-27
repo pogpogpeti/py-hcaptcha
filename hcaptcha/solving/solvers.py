@@ -1,8 +1,8 @@
 from ..challenges import Challenge
 from .exceptions import *
-from typing import Union
 from collections import Mapping
 from hashlib import sha1
+from typing import Union
 import random
 import redis
 

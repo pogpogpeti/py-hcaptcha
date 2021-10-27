@@ -1,7 +1,7 @@
 from ..utils import parse_jsw
 from datetime import datetime
-import math
 import hashlib
+import math
 
 def get_proof(req):
     x = "0123456789/:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
