@@ -4,7 +4,7 @@ An unofficial wrapper for interacting with hCaptcha challenges.
 # Install
 * Device must be have Google Chrome installed.
 ```bash
-pip install git+https://github.com/h0nde/py-hcaptcha
+pip install -U git+https://github.com/h0nde/py-hcaptcha
 ```
 
 # Usage
@@ -12,8 +12,8 @@ pip install git+https://github.com/h0nde/py-hcaptcha
 import hcaptcha
 
 ch = hcaptcha.Challenge(
-    site_key="f5561ba9-8f1e-40ca-9b5b-a0b3f719ef34",
-    site_url="https://discord.com/",
+    site_key="13257c82-e129-4f09-a733-2a7cb3102832",
+    site_url="https://dashboard.hcaptcha.com/",
     #proxy="user:pass@127.0.0.1:8888",
     #ssl_context=__import__("ssl")._create_unverified_context(),
     timeout=5
@@ -43,7 +43,7 @@ The module comes with a built-in solver, utilizing a simple-but-efficient brutef
 import multiprocessing
 import threading
 import itertools
-from hcaptcha import Challenge
+import hcaptcha
 from hcaptcha.solving import Solver
 from redis import Redis
 
@@ -65,9 +65,9 @@ def thread(solver, proxy_iter):
     while True:
         ch = None
         try:
-            ch = Challenge(
-                site_key="f5561ba9-8f1e-40ca-9b5b-a0b3f719ef34",
-                site_url="https://discord.com/",
+            ch = hcaptcha.Challenge(
+                site_key="13257c82-e129-4f09-a733-2a7cb3102832",
+                site_url="https://dashboard.hcaptcha.com/",
                 proxy=next(proxy_iter)
             )
             token = solver.solve(ch)
