@@ -91,8 +91,8 @@ if is_main_process():
                     continue
                 proof_event.clear()
                 proof_set_event.set()
-            except:
-                pass
+            except Exception as exc:
+                print(f"HSW proof updater thread error: {exc!r}")
 
     threading.Thread(target=proof_updater).start()
     time.sleep(5)
