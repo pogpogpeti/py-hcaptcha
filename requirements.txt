@@ -3,5 +3,7 @@ pytweening
 pillow
 flask
 flask-socketio
+gevent
+gevent-websocket
 python-socketio
 redis
