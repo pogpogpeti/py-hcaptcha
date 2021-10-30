@@ -44,26 +44,15 @@ The module comes with a built-in solver, utilizing a simple-but-efficient brutef
 `Solver` accepts a Redis or a dict-like object as the database parameter.
 
 ```python
-import multiprocessing
-import threading
-import itertools
 import hcaptcha
 from hcaptcha.solving import Solver
+from itertools import cycle
+import multiprocessing
 from redis import Redis
+import threading
 
 WORKER_COUNT = 4
 THREAD_COUNT = 50
-
-def worker(proxy_list):
-    proxy_iter = itertools.cycle(proxy_list)
-    db = Redis()
-    solver = Solver(db)
-
-    for _ in range(50):
-        threading.Thread(
-            target=thread,
-            args=(solver, proxy_iter)
-        ).start()
 
 def thread(solver, proxy_iter):
     while True:
@@ -81,6 +70,17 @@ def thread(solver, proxy_iter):
             print(f"{err!r}")
         finally:
             if ch: ch.close()
+
+def worker(proxy_list):
+    proxy_iter = cycle(proxy_list)
+    db = Redis()
+    solver = Solver(db)
+
+    for _ in range(50):
+        threading.Thread(
+            target=thread,
+            args=(solver, proxy_iter)
+        ).start()
 
 if __name__ == "__main__":
     with open("proxies.txt") as fp:
