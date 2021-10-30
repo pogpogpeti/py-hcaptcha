@@ -35,7 +35,7 @@ class HTTPClient:
         self,
         method: str,
         url: str,
-        headers: dict = {},
+        headers: dict = None,
         body: Union[bytes, None] = None,
         **kwargs
         ) -> HTTPResponse:
@@ -44,7 +44,7 @@ class HTTPClient:
         path = p_url.path + (f"?{p_url.query}" if p_url.query else "")
         conn = self._get_conn(p_url.hostname, p_url.port,
                               ssl=(p_url.scheme == "https"))
-        conn.request(method, path, body, headers, **kwargs)
+        conn.request(method, path, body, headers or {}, **kwargs)
         resp = conn.getresponse()
         return resp
     
