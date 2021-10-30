@@ -19,6 +19,10 @@ ch = hcaptcha.Challenge(
     timeout=5
 )
 
+if ch.token:
+    print(ch.token)
+    exit()
+
 print(ch.question["en"])
 
 for tile in ch:
