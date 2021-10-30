@@ -68,7 +68,7 @@ class Challenge:
     def submit(self) -> str:
         if self.token: return self.token
     
-        self._simulate_solve()
+        self._simulate_mouse_events()
         self._agent.epoch_wait()
         data = self._request(
             method="POST",
@@ -248,7 +248,7 @@ class Challenge:
         self._frame = EventRecorder(agent=self._agent)
         self._frame.record()
 
-    def _simulate_solve(self):
+    def _simulate_mouse_events(self):
             total_pages = max(1, int(len(self.tiles)/TILES_PER_PAGE))
             cursor_pos = (
                 randint(1, 5),
