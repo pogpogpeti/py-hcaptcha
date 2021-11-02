@@ -131,7 +131,8 @@ class Challenge:
         data = self._request(
             method="GET",
             url="https://hcaptcha.com/checksiteconfig"
-               f"?host={self._site_hostname}&sitekey={self._site_key}&sc=1&swa=1",
+               f"?host={self._site_hostname}&sitekey={self._site_key}"
+                "&sc=1&swa=1",
             headers={
                 "Cache-Control": "no-cache",
                 "Content-type": "application/json; charset=utf-8"
