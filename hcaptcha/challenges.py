@@ -8,7 +8,7 @@ from .proofs import get_proof
 from .structures import EventRecorder
 from .utils import random_widget_id, latest_version_id
 from random import randint
-from typing import Iterator, List
+from typing import Iterator, List, Union
 import json
 import ssl
 import zlib
@@ -28,6 +28,7 @@ class Challenge:
         self,
         site_key: str,
         site_url: str,
+        data: Union[dict, None] = None,
         agent: Agent = None,
         http_client: HTTPClient = None,
         **http_kwargs
@@ -35,11 +36,13 @@ class Challenge:
         self._site_key = site_key
         self._site_url = site_url
         self._site_hostname = site_url.split("://", 1)[1].split("/", 1)[0].lower()
-        self._agent = agent or random_agent()
-        self._http_client = http_client or HTTPClient(**http_kwargs)
+        self._custom_data = data or {}
         self._widget_id = random_widget_id()
         self._spec = None
         self._answers = []
+
+        self._agent = agent or random_agent()
+        self._http_client = http_client or HTTPClient(**http_kwargs)
 
         self.id = None
         self.token = None
@@ -156,6 +159,7 @@ class Challenge:
                         "expiredResponse": False
                     }
                 }),
+                **self._custom_data,
                 "n": self._get_proof(),
                 "c": self._agent.json_encode(self._spec)
             }),
