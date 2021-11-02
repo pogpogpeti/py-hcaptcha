@@ -12,25 +12,15 @@ class Solver:
         database: Union[redis.Redis, Mapping],
         min_answers: int = 3
         ):
+        """Used for solving challenges using a bruteforce technique.
+        
+        :param database: :class:`Redis` or :class:`Mapping` object to be used for storing tile IDs and counts.
+        :param min_answers: the minimum amount of answers to be submitted for a challenge."""
         self._database = database
         self._min_answers = min_answers
 
-    def _get_tile_score(self, tile):
-        if isinstance(self._database, redis.Redis):
-            return int(self._database.get(tile.custom_id) or 0)
-
-        elif isinstance(self._database, Mapping):
-            return self._database.get(tile.custom_id, 0)
-
-    def _incr_tile_score(self, tile, incr_by):
-        if isinstance(self._database, redis.Redis):
-            self._database.incrby(tile.custom_id, incr_by)
-
-        elif isinstance(self._database, Mapping):
-            value = self._database.get(tile.custom_id, 0)
-            self._database[tile.custom_id] = value + incr_by
-    
     def solve(self, challenge: Challenge) -> str:
+        """Attempt to solve challenge. Returns token if successful."""
         prefixes = [
             "Please click each image containing a ",
             "Please click each image containing an ",
@@ -54,9 +44,7 @@ class Solver:
                 f"Unsupported challenge question: {challenge.question['en']}")
         
         variation = challenge.question["en"] \
-            .replace(prefix, "") \
-            .rstrip(".") \
-            .lower()
+            .replace(prefix, "").rstrip(".").lower()
         
         for tile in challenge.tiles:
             image = tile.get_image(raw=True)
@@ -71,7 +59,7 @@ class Solver:
         
         for index in range(max(
                 self._min_answers,
-                len([1 for tile in challenge.tiles if tile.score])
+                len([1 for tile in challenge.tiles if tile.score >= 1])
             )):
             tile = challenge.tiles[index]
             tile.selected = True
@@ -84,3 +72,18 @@ class Solver:
             self._incr_tile_score(tile, 1)
         
         return challenge.token
+
+    def _get_tile_score(self, tile):
+        if isinstance(self._database, redis.Redis):
+            return int(self._database.get(tile.custom_id) or 0)
+
+        elif isinstance(self._database, Mapping):
+            return self._database.get(tile.custom_id, 0)
+
+    def _incr_tile_score(self, tile, incr_by):
+        if isinstance(self._database, redis.Redis):
+            self._database.incrby(tile.custom_id, incr_by)
+
+        elif isinstance(self._database, Mapping):
+            value = self._database.get(tile.custom_id, 0)
+            self._database[tile.custom_id] = value + incr_by
