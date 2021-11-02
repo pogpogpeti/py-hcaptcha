@@ -15,7 +15,7 @@ class Solver:
         """Used for solving challenges using a bruteforce technique.
         
         :param database: :class:`Redis` or :class:`Mapping` object to be used for storing tile IDs and counts.
-        :param min_answers: the minimum amount of answers to be submitted for a challenge."""
+        :param min_answers: minimum amount of answers to be submitted for a challenge."""
         self._database = database
         self._min_answers = min_answers
 
