@@ -33,12 +33,21 @@ class Challenge:
         http_client: HTTPClient = None,
         **http_kwargs
     ):
+        """Represents a hCaptcha challenge.
+
+        :param site_key: `data-sitekey` attr. of the target website.
+        :param site_url: url of the page where the captcha is visible on the target website.
+        :param data: (optional) Mapping of custom form fields to be passed to hCaptcha.
+        :param agent: (optional) :class:`Agent` to be used for simulating browser properties. Defaults to :class:`ChromeAgent`.
+        :param http_client: (optional) :class:`HTTPClient` to be used when sending requests.
+        :param **http_kwargs: (optional) Arguments to be used for constructing a :class:`HTTPClient` when one isn't provided.
+        """
         self._site_key = site_key
         self._site_url = site_url
         self._site_hostname = site_url.split("://", 1)[1].split("/", 1)[0].lower()
         self._custom_data = data or {}
         self._widget_id = random_widget_id()
-        self._spec = None
+        self._proof_data = None
         self._answers = []
 
         self._agent = agent or random_agent()
@@ -58,6 +67,7 @@ class Challenge:
         self._frame.set_data("dct", self._frame._manifest["st"])
 
     def __iter__(self) -> Iterator[Tile]:
+        """Iterates over the challenge's tiles."""
         if not self.tiles: return
         yield from self.tiles
 
@@ -65,10 +75,17 @@ class Challenge:
         self._http_client.clear()
 
     def answer(self, tile: Tile) -> None:
+        """Adds specified :class:`Tile` to list of answers.
+        
+        :param tile: the :class:`Tile` to be marked as an answer.
+        """
         assert isinstance(tile, Tile), "Not a tile object."
         self._answers.append(tile)
     
     def submit(self) -> str:
+        """Submits the list of answers.
+        Returns solution token if successful.
+        """
         if self.token: return self.token
     
         self._simulate_mouse_events()
@@ -96,7 +113,7 @@ class Challenge:
                     "v": 1
                 }),
                 "n": self._get_proof(),
-                "c": self._agent.json_encode(self._spec)
+                "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
             sec_site="same-site",
@@ -161,7 +178,7 @@ class Challenge:
                 }),
                 **self._custom_data,
                 "n": self._get_proof(),
-                "c": self._agent.json_encode(self._spec)
+                "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
             sec_site="same-site",
@@ -231,13 +248,13 @@ class Challenge:
         if resp.headers["content-type"].startswith("application/json"):
             data = json.loads(data)
             if "c" in data:
-                self._spec = data["c"]
+                self._proof_data = data["c"]
             
         return data
 
     def _get_proof(self):
-        if not self._spec: return
-        return get_proof(self._spec["type"], self._spec["req"])
+        if not self._proof_data: return
+        return get_proof(self._proof_data["type"], self._proof_data["req"])
 
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
