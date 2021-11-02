@@ -1,6 +1,6 @@
 from .agents import Agent, random_agent
 from .constants import *
-from .curves import gen_mouse_move
+from .curves import gen_mouse_movements
 from .exceptions import *
 from .http_ import HTTPClient
 from .models import Tile
@@ -271,11 +271,8 @@ class Challenge:
         self._frame.record()
 
     def _simulate_mouse_events(self):
-            total_pages = max(1, int(len(self.tiles)/TILES_PER_PAGE))
-            cursor_pos = (
-                randint(1, 5),
-                randint(300, 350)
-            )
+            total_pages = max(1, int(len(self.tiles) / TILES_PER_PAGE))
+            cursor_pos = (randint(1, 5), randint(300, 350))
 
             for page in range(total_pages):
                 page_tiles = self.tiles[page * TILES_PER_PAGE : (page + 1) * TILES_PER_PAGE]
@@ -292,7 +289,7 @@ class Challenge:
                             + randint(10, TILE_IMAGE_SIZE[1])
                             + TILE_IMAGE_START_POS[1],
                     )
-                    for event in gen_mouse_move(cursor_pos, tile_pos, self._agent,
+                    for event in gen_mouse_movements(cursor_pos, tile_pos, self._agent,
                             offsetBoundaryX=0, offsetBoundaryY=0, leftBoundary=0,
                             rightBoundary=FRAME_SIZE[0], upBoundary=FRAME_SIZE[1],
                             downBoundary=0):
@@ -307,7 +304,7 @@ class Challenge:
                     VERIFY_BTN_POS[0] + randint(5, 50),
                     VERIFY_BTN_POS[1] + randint(5, 15),
                 )
-                for event in gen_mouse_move(cursor_pos, btn_pos, self._agent,
+                for event in gen_mouse_movements(cursor_pos, btn_pos, self._agent,
                         offsetBoundaryX=0, offsetBoundaryY=0, leftBoundary=0,
                         rightBoundary=FRAME_SIZE[0], upBoundary=FRAME_SIZE[1],
                         downBoundary=0):

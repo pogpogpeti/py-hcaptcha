@@ -4,7 +4,7 @@ from random import random, randint
 import pytweening
 import numpy as np
 
-def gen_mouse_move(from_point, to_point, agent, **kwargs):
+def gen_mouse_movements(from_point, to_point, agent, **kwargs):
     obj = HumanCurve(from_point, to_point, agent, **kwargs)
     return obj.points
 
