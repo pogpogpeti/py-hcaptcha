@@ -21,11 +21,6 @@ class Solver:
 
     def solve(self, challenge: Challenge) -> str:
         """Attempt to solve challenge. Returns token if successful."""
-        prefixes = [
-            "Please click each image containing a ",
-            "Please click each image containing an ",
-        ]
-
         if challenge.token:
             return challenge.token
 
@@ -33,12 +28,15 @@ class Solver:
             raise UnsupportedChallenge(
                 f"Unsupported challenge mode: {challenge.mode}")
 
+        prefixes = [
+            "Please click each image containing a ",
+            "Please click each image containing an ",
+        ]
         prefix = None
         for _prefix in prefixes:
             if challenge.question["en"].startswith(_prefix):
                 prefix = _prefix
                 break
-
         if not prefix:
             raise UnsupportedChallenge(
                 f"Unsupported challenge question: {challenge.question['en']}")
