@@ -253,8 +253,10 @@ class Challenge:
         return data
 
     def _get_proof(self):
-        if not self._proof_data: return
-        return get_proof(self._proof_data["type"], self._proof_data["req"])
+        if not self._proof_data: return "null"
+        return get_proof(
+            self._proof_data["type"],
+            self._proof_data["req"])
 
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
