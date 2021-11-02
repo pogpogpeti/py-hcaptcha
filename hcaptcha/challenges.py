@@ -75,7 +75,7 @@ class Challenge:
         self._http_client.clear()
 
     def answer(self, tile: Tile) -> None:
-        """Adds specified :class:`Tile` to list of answers.
+        """Adds :class:`Tile` to list of answers.
         
         :param tile: the :class:`Tile` to be marked as an answer.
         """
