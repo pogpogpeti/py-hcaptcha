@@ -83,7 +83,7 @@ class Challenge:
         self._answers.append(tile)
     
     def submit(self) -> str:
-        """Submits the list of answers.
+        """Submits list of answers.
         Returns solution token if successful.
         """
         if self.token: return self.token
