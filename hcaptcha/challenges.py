@@ -267,7 +267,6 @@ class Challenge:
         self._top.set_data("nv", self._agent.get_navigator_properties())
         self._top.set_data("exec", False)
         self._agent.epoch_travel(randint(200, 400))
-
         self._frame = EventRecorder(agent=self._agent)
         self._frame.record()
 
