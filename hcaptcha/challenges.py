@@ -120,7 +120,6 @@ class Challenge:
             sec_mode="cors",
             sec_dest="empty"
         )
-        self.close()
 
         if not data.get("pass"):
             raise RequestRejected("Submit request was rejected.")
