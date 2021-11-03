@@ -1,18 +1,13 @@
-from hcaptcha.http_.clients import HTTPClient
 from .http_ import HTTPClient
 from base64 import b64decode
 import json
 import random
 import string
 
-def is_main_process():
-    proc = __import__("multiprocessing").current_process()
-    return proc.name == "MainProcess"
-
 def latest_version_id():
     with HTTPClient() as http:
         resp = http.request("GET", "https://hcaptcha.com/1/api.js")
-        return resp.headers["location"]\
+        return resp.headers["location"] \
             .split("v1/", 1)[1].split("/", 1)[0]
 
 def random_widget_id():
@@ -22,8 +17,8 @@ def random_widget_id():
     ))
     return widget_id
 
-def parse_jsw(req):
-    fields = req.split(".")
+def parse_jsw(data):
+    fields = data.split(".")
     return {
         "header": json.loads(b64decode(fields[0])),
         "payload": json.loads(b64decode(fields[1] + ("=" * ((4 - len(fields[1]) % 4) % 4)))),
@@ -34,3 +29,10 @@ def parse_jsw(req):
             "signature": fields[2]
         }
     }
+
+def hostname_from_url(url):
+    return url.split("://", 1)[1].split("/", 1)[0].lower()
+
+def is_main_process():
+    proc = __import__("multiprocessing").current_process()
+    return proc.name == "MainProcess"

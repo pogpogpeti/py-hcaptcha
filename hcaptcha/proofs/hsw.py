@@ -101,10 +101,10 @@ def proof_updater():
             data_event.wait()
             data_event.clear()
             sio.emit("request", latest_data)
-            proof_event.wait(timeout=5)
+            proof_event.wait(timeout=2)
             proof_event.clear()
             proof_set_event.set()
-            time.sleep(1)
+            time.sleep(0.2)
         except:
             pass
 threading.Thread(target=proof_updater).start()
@@ -114,5 +114,6 @@ def get_proof(data):
     latest_data = data
     data_event.set()
     proof_set_event.wait()
-    proof = latest_proof + "".join(random.choices("ghijklmnopqrstuvwxyz", k=5))
+    proof = latest_proof
+    proof += "".join(random.choices("ghijklmnopqrstuvwxyz", k=5))
     return proof

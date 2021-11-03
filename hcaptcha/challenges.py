@@ -6,7 +6,7 @@ from .http_ import HTTPClient
 from .models import Tile
 from .proofs import get_proof
 from .structures import EventRecorder
-from .utils import random_widget_id, latest_version_id
+from .utils import random_widget_id, latest_version_id, hostname_from_url
 from random import randint
 from typing import Iterator, List, Union
 import json
@@ -44,7 +44,7 @@ class Challenge:
         """
         self._site_key = site_key
         self._site_url = site_url
-        self._site_hostname = site_url.split("://", 1)[1].split("/", 1)[0].lower()
+        self._site_hostname = hostname_from_url(site_url)
         self._custom_data = data or {}
         self._widget_id = random_widget_id()
         self._proof_data = None

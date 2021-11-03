@@ -3,6 +3,7 @@ from datetime import datetime
 import hashlib
 import math
 
+# Translated from hsl.js
 def get_proof(req):
     x = "0123456789/:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     req = parse_jsw(req)
