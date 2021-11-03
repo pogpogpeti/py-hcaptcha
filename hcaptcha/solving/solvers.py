@@ -20,7 +20,7 @@ class Solver:
         self._min_answers = min_answers
 
     def solve(self, challenge: Challenge) -> str:
-        """Attempt to solve challenge. Returns token if successful."""
+        """Attempt to solve challenge, return token if successful."""
 
         # Return solution key if challenge is already solved.
         if challenge.token: return challenge.token
