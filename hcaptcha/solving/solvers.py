@@ -47,7 +47,7 @@ class Solver:
 
         if not keyword:
             raise UnsupportedChallenge(
-                f"Unsupported challenge question: {question}")
+                f"Unsupported challenge question: '{question}'")
         
         # Assign custom IDs to tiles ('keyword|image hash').
         for tile in challenge.tiles:
