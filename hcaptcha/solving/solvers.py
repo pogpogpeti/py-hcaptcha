@@ -34,7 +34,7 @@ class Solver:
         # is 'image_label_binary'.
         if challenge.mode != "image_label_binary":
             raise UnsupportedChallenge(
-                f"Unsupported challenge mode: {challenge.mode}")
+                f"Unsupported challenge mode: '{challenge.mode}'")
 
         # Extract keyword from question.
         question = challenge.question["en"]
