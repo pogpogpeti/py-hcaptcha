@@ -4,7 +4,12 @@ from collections import Mapping
 from hashlib import sha1
 from typing import Union
 import random
+import re
 import redis
+
+question_patterns = (
+    re.compile("Please click each image containing a[n]? (.+)"),
+)
 
 class Solver:
     def __init__(
@@ -12,7 +17,7 @@ class Solver:
         database: Union[redis.Redis, Mapping],
         min_answers: int = 3
         ):
-        """Used for solving hCaptcha challenges, utilizing a bruteforce technique.
+        """Used for solving hCaptcha challenges.
         
         :param database: :class:`Redis` or :class:`Mapping` object to be used for storing tile IDs and counts.
         :param min_answers: minimum amount of answers to be submitted for a challenge."""
@@ -21,9 +26,7 @@ class Solver:
 
     def solve(self, challenge: Challenge) -> str:
         """Solves and returns solution key of given challenge.
-        Utilizes RNG and cached data for solving.
-        """
-
+        Utilizes RNG and cached data for solving."""
         # Return solution key if challenge is already solved.
         if challenge.token: return challenge.token
 
@@ -34,26 +37,23 @@ class Solver:
                 f"Unsupported challenge mode: {challenge.mode}")
 
         # Extract keyword from question.
-        prefixes = (
-            "Please click each image containing a ",
-            "Please click each image containing an "
-        )
-        prefix = None
-        for _prefix in prefixes:
-            if challenge.question["en"].startswith(_prefix):
-                prefix = _prefix
+        question = challenge.question["en"]
+        keyword = None
+
+        for pattern in question_patterns:
+            if (m := pattern.match(question)):
+                keyword = m.group(1).lower().rstrip(".")
                 break
-        if not prefix:
+
+        if not keyword:
             raise UnsupportedChallenge(
-                f"Unsupported challenge question: {challenge.question['en']}")
-        variation = challenge.question["en"] \
-                    .replace(prefix, "").rstrip(".").lower()
+                f"Unsupported challenge question: {question}")
         
-        # Assign custom IDs to tiles ('variation|image hash').
+        # Assign custom IDs to tiles ('keyword|image hash').
         for tile in challenge.tiles:
             image = tile.get_image(raw=True)
             image_hash = sha1(image).hexdigest()
-            tile.custom_id = f"{variation}|{image_hash}"
+            tile.custom_id = f"{keyword}|{image_hash}"
             tile.score = self._get_tile_score(tile)
             tile.selected = False
 
