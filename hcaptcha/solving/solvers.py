@@ -36,8 +36,8 @@ class Solver:
         
         # Assign custom IDs to tiles ('question hash|image hash').
         for tile in challenge.tiles:
-            image = tile.get_image(raw=True)
-            image_hash = sha1(image).hexdigest()
+            image_data = tile.get_image(raw=True)
+            image_hash = sha1(image_data).hexdigest()
             tile.custom_id = f"{question_hash}|{image_hash}"
             tile.score = self._get_tile_score(tile)
             tile.selected = False
