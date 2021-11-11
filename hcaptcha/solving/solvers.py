@@ -49,7 +49,7 @@ class Solver:
             reverse=True)
         
         # Select first <min_answers> tiles, or more
-        # if >0 score tasks are greater.
+        # if number of >0 score tasks are greater.
         for index in range(max(
                 self._min_answers,
                 len([1 for tile in challenge.tiles if tile.score >= 1])
