@@ -50,14 +50,13 @@ class Solver:
         
         # Select first <min_answers> tiles, or more
         # if number of >0 score tasks are greater.
-        for index in range(max(
-                self._min_answers,
-                len([1 for tile in challenge.tiles if tile.score >= 1])
-            )):
+        n_answers = max(self._min_answers,
+                        len(list(filter(lambda t: t.score > 0, challenge.tiles))))
+        for index in range(n_answers):
             tile = challenge.tiles[index]
             tile.selected = True
             challenge.answer(tile)
-
+            
         challenge.submit()
 
         # If no error is raised past this point, the answers
