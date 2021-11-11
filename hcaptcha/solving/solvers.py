@@ -4,12 +4,7 @@ from collections import Mapping
 from hashlib import sha1
 from typing import Union
 import random
-import re
 import redis
-
-question_patterns = (
-    re.compile("Please click each image containing a[n]? (.+)"),
-)
 
 class Solver:
     def __init__(
@@ -36,24 +31,14 @@ class Solver:
             raise UnsupportedChallenge(
                 f"Unsupported challenge mode: '{challenge.mode}'")
 
-        # Extract keyword from question.
-        question = challenge.question["en"]
-        keyword = None
-
-        for pattern in question_patterns:
-            if (m := pattern.match(question)):
-                keyword = m.group(1).lower().rstrip(".")
-                break
-
-        if not keyword:
-            raise UnsupportedChallenge(
-                f"Unsupported challenge question: '{question}'")
+        # Hash the question string for shorter tile IDs.
+        question_hash = sha1(challenge.question["en"].encode()).hexdigest()[:8]
         
-        # Assign custom IDs to tiles ('keyword|image hash').
+        # Assign custom IDs to tiles ('question hash|image hash').
         for tile in challenge.tiles:
             image = tile.get_image(raw=True)
             image_hash = sha1(image).hexdigest()
-            tile.custom_id = f"{keyword}|{image_hash}"
+            tile.custom_id = f"{question_hash}|{image_hash}"
             tile.score = self._get_tile_score(tile)
             tile.selected = False
 
