@@ -31,7 +31,7 @@ class Solver:
             raise UnsupportedChallenge(
                 f"Unsupported challenge mode: '{challenge.mode}'")
 
-        # Hash the question string for shorter tile IDs.
+        # Hash the question string for uniform tile IDs.
         question_hash = sha1(challenge.question["en"].encode()).hexdigest()[:8]
         
         # Assign custom IDs to tiles ('question hash|image hash').
