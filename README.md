@@ -76,7 +76,7 @@ def worker(proxy_list):
     db = Redis()
     solver = Solver(db)
 
-    for _ in range(50):
+    for _ in range(THREAD_COUNT):
         threading.Thread(
             target=thread,
             args=(solver, proxy_iter)
