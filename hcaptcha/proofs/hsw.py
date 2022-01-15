@@ -64,7 +64,7 @@ if is_main_process():
         subprocess.call(["taskkill", "/f", "/im", "chrome.exe"])
         browser = subprocess.Popen([
             os.environ["PROGRAMFILES"] + "/Google/Chrome/Application/chrome.exe",
-            "--headless",
+            "",
             "--disable-gpu",
             "--new-window",
             "-incognito",
