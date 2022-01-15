@@ -64,10 +64,8 @@ if is_main_process():
         subprocess.call(["taskkill", "/f", "/im", "chrome.exe"])
         browser = subprocess.Popen([
             os.environ["PROGRAMFILES"] + "/Google/Chrome/Application/chrome.exe",
-            "",
+            "--headless",
             "--disable-gpu",
-            "--new-window",
-            "-incognito",
             "http://localhost:9932/"])
     
     else:
@@ -76,8 +74,6 @@ if is_main_process():
             "google-chrome",
             "--headless",
             "--disable-gpu",
-            "--new-window",
-            "-incognito",
             "http://localhost:9932/"])
 
 sio = socketio.Client()
