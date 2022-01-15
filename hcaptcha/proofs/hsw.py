@@ -64,7 +64,7 @@ if is_main_process():
         subprocess.call(["taskkill", "/f", "/im", "chrome.exe"])
         browser = subprocess.Popen([
             os.environ["PROGRAMFILES"] + "/Google/Chrome/Application/chrome.exe",
-            "--start-maximized",
+            "--headless",
             "--disable-gpu",
             "--new-window",
             "-incognito",
@@ -74,7 +74,7 @@ if is_main_process():
         subprocess.call(["pkill", "-9", "chrome"])
         browser = subprocess.Popen([
             "google-chrome",
-            "--start-maximized",
+            "--headless",
             "--disable-gpu",
             "--new-window",
             "-incognito",
