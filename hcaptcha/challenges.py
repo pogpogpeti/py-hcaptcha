@@ -58,7 +58,7 @@ class Challenge:
         self._http_client = http_client or HTTPClient(**http_kwargs)
         self.image_detection = image_detection
         if self.image_detection == True: 
-            self.model = torch.hub.load('ultralytics/yolov5', 'yolov5x',
+            self.model = torch.hub.load('ultralytics/yolov5', 'yolov5s',
                        pretrained=True, force_reload=True)
 
         self.id = None
