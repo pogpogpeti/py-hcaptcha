@@ -135,7 +135,7 @@ class Challenge:
                     "topLevel": self._top.get_data(),
                     "v": 1
                 }),
-                "n": self._get_proof(),
+                "n": self._get_proof(self.hsw),
                 "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
@@ -200,7 +200,7 @@ class Challenge:
                     }
                 }),
                 **self._custom_data,
-                "n": self._get_proof(),
+                "n": self._get_proof(self.hsw),
                 "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
@@ -275,16 +275,16 @@ class Challenge:
             
         return data
 
-    def _get_proof(self):
+    def _get_proof(self, hsw):
         if not self._proof_data: return "null"
         return get_proof(
             self._proof_data["type"],
             self._proof_data["req"],
-            str(self.hsw))
+            hsw)
 
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
-        self._top.record()
+        self._top.record,
         self._top.set_data("dr", "") # referrer
         self._top.set_data("inv", False)
         self._top.set_data("sc", self._agent.get_screen_properties())
