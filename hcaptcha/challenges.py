@@ -267,7 +267,7 @@ class Challenge:
             sec_mode=sec_mode,
             sec_dest=sec_dest)
 
-        resp = httpx.request()(method=method, url=url, headers=headers, data=body)
+        resp = httpx.request(method=method, url=url, headers=headers, data=body)
         data = resp.read()
 
         if (encoding := resp.headers.get("content-encoding")):
