@@ -274,7 +274,7 @@ class Challenge:
         #    if encoding == "gzip":
         #        data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
 
-        if resp.status > 403:
+        if resp.status_code > 403:
             raise RequestRejected(
                 f"Unrecognized status code: {resp.status}: {resp.reason}")
 
