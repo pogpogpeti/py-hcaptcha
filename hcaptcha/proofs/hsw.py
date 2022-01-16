@@ -7,7 +7,7 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])
 driver = webdriver.Chrome(options=options)
 
 
-def get_proof(data, hsw):
+def get_proof(data, hsw: str):
     proof = driver.execute_script(hsw + f"return hsw('{req}');")
     proof += "".join(random.choices("ghijklmnopqrstuvwxyz", k=5))
     return proof
