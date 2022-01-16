@@ -60,7 +60,6 @@ class Challenge:
         self.model = model
 
         self._agent = agent or random_agent()
-        self._http_client = httpx.request()
         self.image_detection = image_detection
 
 
@@ -268,7 +267,7 @@ class Challenge:
             sec_mode=sec_mode,
             sec_dest=sec_dest)
 
-        resp = self._http_client.request(method=method, url=url, headers=headers, data=body)
+        resp = httpx.request()(method=method, url=url, headers=headers, data=body)
         data = resp.read()
 
         if (encoding := resp.headers.get("content-encoding")):
