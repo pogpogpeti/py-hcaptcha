@@ -218,7 +218,15 @@ class Challenge:
         self.id = data["key"]
         self.config = data["request_config"]
         self.mode = data["request_type"]
-        self.question = data["requester_question"]
+
+        word_dict = ['bicycle', 'motorcycle', 'train', 'truck', 'car', 'seaplane', 'boat', 'motorbus']
+
+        self.question = data["requester_question"]["en"].split(' ')[-1]
+
+        for _ in word_dict: 
+            for __ in list(string.ascii_lowercase): 
+                obj2 = re.sub('[^\x00-\x7F]', __, self.question)
+                if obj2 == _: self.question = _
         self.tiles = [
             Tile(id=info["task_key"],
                  image_url=info["datapoint_uri"],
