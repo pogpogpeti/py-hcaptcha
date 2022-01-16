@@ -75,7 +75,6 @@ class Challenge:
         self._frame.set_data("dct", self._frame._manifest["st"])
         if self.image_detection == True:
             self.define_images()
-            self.submit()
             
     def define_images(self):
         for tile in self.tiles:
