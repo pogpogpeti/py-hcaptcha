@@ -4,6 +4,8 @@ from .utils import is_main_process, parse_jsw
 import json
 import os
 
+_appdata = os.getenv('LOCALAPPDATA')
+
 def download_script_files():
     files = ("hsw.js", )
 
@@ -27,7 +29,7 @@ def download_script_files():
 
         for filename in files:
             resp = http.request(method="GET", url=f"{base_url}/{filename}")
-            with open(f"C:\Users\fetix\appdata\local\programs\python\python38\lib\site-packages\hcaptcha\hcaptcha-js/{filename}", "wb") as fp:
+            with open(f"{_appdata}/programs/python/python38/lib/site-packages/hcaptcha/hcaptcha-js/{filename}", "wb") as fp:
                 fp.write(resp.read())
 
 if is_main_process():
