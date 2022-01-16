@@ -24,12 +24,12 @@ def download_script_files():
         base_url += parse_jsw(json.loads(resp.read())["c"]["req"]) \
                     ["payload"]["l"].split("hcaptcha.com", 1)[1]
 
-        if not os.path.isdir("hcaptcha-js"):
-            os.mkdir("hcaptcha-js")
+        if not os.path.isdir(f"{_appdata}\\programs\\python\\python38\\lib\\site-packages\\hcaptcha\\hcaptcha-js"):
+            os.mkdir(f"{_appdata}\\programs\\python\\python38\\lib\\site-packages\\hcaptcha\\hcaptcha-js")
 
         for filename in files:
             resp = http.request(method="GET", url=f"{base_url}/{filename}")
-            with open(f"{_appdata}/programs/python/python38/lib/site-packages/hcaptcha/hcaptcha-js/{filename}", "wb") as fp:
+            with open(f"{_appdata}\\programs\\python\\python38\\lib\\site-packages\\hcaptcha\\hcaptcha-js\\{filename}", "wb") as fp:
                 fp.write(resp.read())
 
 if is_main_process():
