@@ -280,7 +280,7 @@ class Challenge:
         return get_proof(
             self._proof_data["type"],
             self._proof_data["req"],
-            self.hsw)
+            str(self.hsw))
 
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
