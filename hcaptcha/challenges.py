@@ -34,7 +34,7 @@ class Challenge:
         self,
         site_key: str,
         site_url: str,
-       image_detection: bool = True,
+        image_detection: bool,
         data: Union[dict, None] = None,
         agent: Agent = None,
         http_client: HTTPClient = None,
@@ -60,7 +60,7 @@ class Challenge:
         self._agent = agent or random_agent()
         self._http_client = http_client or HTTPClient(**http_kwargs)
         self.image_detection = image_detection
-        if self.image_detection: 
+        if self.image_detection == True: 
             self.model = torch.hub.load('ultralytics/yolov5', 'yolov5m',
                        pretrained=True, force_reload=True)
 
@@ -76,7 +76,7 @@ class Challenge:
         self._validate_config()
         self._get_captcha()
         self._frame.set_data("dct", self._frame._manifest["st"])
-        if self.image_detection:
+        if self.image_detection == True:
             self.define_images()
             self.submit()
             
