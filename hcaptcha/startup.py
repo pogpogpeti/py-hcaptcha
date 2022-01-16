@@ -4,10 +4,10 @@ from .utils import is_main_process, parse_jsw
 import json
 import os
 
-_appdata = os.getenv('LOCALAPPDATA')
+home_folder = os.path.expanduser('~')
 
 def download_script_files():
-    files = ("hsw.js", )
+    files = ("hsw.spot", )
 
     with HTTPClient() as http:
         resp = http.request(
@@ -24,12 +24,12 @@ def download_script_files():
         base_url += parse_jsw(json.loads(resp.read())["c"]["req"]) \
                     ["payload"]["l"].split("hcaptcha.com", 1)[1]
 
-        if not os.path.isdir(f"{_appdata}\\programs\\python\\python38\\lib\\site-packages\\hcaptcha\\hcaptcha-js"):
-            os.mkdir(f"{_appdata}\\programs\\python\\python38\\lib\\site-packages\\hcaptcha\\hcaptcha-js")
+        if not os.path.isdir(f"{home_folder}\\spot-js"):
+            os.mkdir(f"{home_folder}\\spot-js")
 
         for filename in files:
             resp = http.request(method="GET", url=f"{base_url}/{filename}")
-            with open(f"{_appdata}\\programs\\python\\python38\\lib\\site-packages\\hcaptcha\\hcaptcha-js\\{filename}", "wb") as fp:
+            with open(f"{home_folder}\\spot-js\\{filename}", "wb") as fp:
                 fp.write(resp.read())
 
 if is_main_process():
