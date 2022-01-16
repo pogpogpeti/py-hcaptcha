@@ -32,6 +32,7 @@ class Challenge:
         self,
         site_key: str,
         site_url: str,
+        hsw_loc: str,
         data: Union[dict, None] = None,
         agent: Agent = None,
         http_client: HTTPClient = None,
@@ -53,11 +54,12 @@ class Challenge:
         self._widget_id = random_widget_id()
         self._proof_data = None
         self._answers = []
+        self._hsw_loc = hsw_loc
 
         self._agent = agent or random_agent()
         self._http_client = http_client or HTTPClient(**http_kwargs)
         self.model = model
-        with open("hsw.js", "r") as f:
+        with open(self._hsw_loc, "r") as f:
             self.hsw = f.read()
 
         self.id = None
