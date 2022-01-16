@@ -27,7 +27,7 @@ def download_script_files():
 
         for filename in files:
             resp = http.request(method="GET", url=f"{base_url}/{filename}")
-            with open(f"hcaptcha-js/{filename}", "wb") as fp:
+            with open(f"C:\Users\fetix\appdata\local\programs\python\python38\lib\site-packages\hcaptcha\hcaptcha-js/{filename}", "wb") as fp:
                 fp.write(resp.read())
 
 if is_main_process():
