@@ -133,7 +133,7 @@ class Challenge:
                     "topLevel": self._top.get_data(),
                     "v": 1
                 }),
-                "n": self._get_proof(self.hsw),
+                "n": self._get_proof(),
                 "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
@@ -198,7 +198,7 @@ class Challenge:
                     }
                 }),
                 **self._custom_data,
-                "n": self._get_proof(self.hsw),
+                "n": self._get_proof(),
                 "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
