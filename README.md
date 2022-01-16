@@ -3,7 +3,9 @@ Forked h-captcha solver made by @h0nde
 Made for a discord token generator, but can be used for everything.
 
 # Install
-* Must download chromedriver according to your Chrome ver. and put it in PATH or in the script folder.
+* Must download ChromeDriver according to your Chrome ver. and put it in PATH or in the script folder.
+* PyTorch
+* Selenium
 ```bash
 pip install -U git+https://github.com/pogpogpeti/py-hcaptcha --upgrade
 ```
