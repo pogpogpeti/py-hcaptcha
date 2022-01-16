@@ -15,6 +15,7 @@ import zlib
 import torch
 import os
 import string, re
+import httpx
 
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s',
            pretrained=True, force_reload=True)
