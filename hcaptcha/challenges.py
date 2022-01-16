@@ -270,9 +270,9 @@ class Challenge:
         resp = httpx.request(method=method, url=url, headers=headers, data=body)
         data = resp.read()
 
-        if (encoding := resp.headers.get("content-encoding")):
-            if encoding == "gzip":
-                data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
+        #if (encoding := resp.headers.get("content-encoding")):
+        #    if encoding == "gzip":
+        #        data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
 
         if resp.status > 403:
             raise RequestRejected(
