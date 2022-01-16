@@ -80,7 +80,7 @@ class Challenge:
         for tile in self.tiles:
             try:
                 self.result = self.model(tile.image_url).pandas().xyxy[0]
-                for _ in self.result.name:
+                for _ in self.result.name[:3]:
                     if _ == self.question: self.result = _; break
                     if _ != self.question: self.result = None
             except: self.result = None
