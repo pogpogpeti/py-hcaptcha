@@ -13,6 +13,7 @@ import json
 import ssl
 import zlib
 import torch
+import os
 
 model = torch.hub.load('ultralytics/yolov5', 'yolov5m',
                        pretrained=True, force_reload=True)
@@ -57,7 +58,8 @@ class Challenge:
         self._agent = agent or random_agent()
         self._http_client = http_client or HTTPClient(**http_kwargs)
         self.model = model
-        with open("hcaptcha-js/hsw.js", "r") as f:
+        self.home_folder = os.path.expanduser('~')
+        with open(f"{self.home_folder}/spot-js/hsw.js", "r") as f:
             self.hsw = f.read()
 
         self.id = None
