@@ -21,7 +21,7 @@ def get_captcha():
             ch = hcaptcha.Challenge(
                 site_key="f5561ba9-8f1e-40ca-9b5b-a0b3f719ef34",
                 site_url="https://discord.com/",
-                image_detection=<boolean, True or False>,
+                image_detection= # <boolean, True or False>,
                 #proxy=<insert proxy here>
             )
             ch.submit()
