@@ -16,6 +16,9 @@ import torch
 import os
 import string, re
 
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s',
+           pretrained=True, force_reload=True)
+
 class Challenge:
     _version_id = latest_version_id()
     _default_ssl_context = ssl.create_default_context()
@@ -53,13 +56,12 @@ class Challenge:
         self._widget_id = random_widget_id()
         self._proof_data = None
         self._answers = []
+        self.model = model
 
         self._agent = agent or random_agent()
         self._http_client = http_client or HTTPClient(**http_kwargs)
         self.image_detection = image_detection
-        if self.image_detection == True: 
-            self.model = torch.hub.load('ultralytics/yolov5', 'yolov5s',
-                       pretrained=True, force_reload=True)
+
 
         self.id = None
         self.token = None
