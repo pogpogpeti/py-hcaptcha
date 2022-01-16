@@ -16,9 +16,6 @@ import torch
 import os
 import string, re
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5x',
-                       pretrained=True, force_reload=True)
-
 class Challenge:
     _version_id = latest_version_id()
     _default_ssl_context = ssl.create_default_context()
