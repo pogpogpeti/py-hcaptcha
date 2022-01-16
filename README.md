@@ -12,6 +12,9 @@ pip install -U git+https://github.com/pogpogpeti/py-hcaptcha --upgrade
 * Selenium
 * numpy
 
+# Recommended
+* An NVIDIA GPU with more than 8GB VRAM if using CUDA
+
 # Usage Example
 ```py
 def get_captcha():
