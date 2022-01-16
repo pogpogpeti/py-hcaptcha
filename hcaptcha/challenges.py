@@ -267,7 +267,7 @@ class Challenge:
             sec_mode=sec_mode,
             sec_dest=sec_dest)
 
-        resp = self._http_client(method, url, headers, body)
+        resp = self._http_client.request(method, url, headers, body)
         data = resp.read()
 
         if (encoding := resp.headers.get("content-encoding")):
