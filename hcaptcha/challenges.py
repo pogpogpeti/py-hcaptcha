@@ -16,7 +16,7 @@ import torch
 import os
 import string, re
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s',
+model = torch.hub.load('ultralytics/yolov5', 'yolov5x',
            pretrained=True, force_reload=True)
 
 class Challenge:
