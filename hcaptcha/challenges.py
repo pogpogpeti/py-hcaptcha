@@ -81,8 +81,8 @@ class Challenge:
             try:
                 self.result = self.model(tile.image_url).pandas().xyxy[0]
                 for _ in self.result.name[:3]:
-                    if _ == self.question: self.result = _; break
-                    if _ != self.question: self.result = None
+                    if _ == self.question_: self.result = _; break
+                    if _ != self.question_: self.result = None
             except: self.result = None
             try:
                 if self.result: self.answer(tile)
@@ -222,7 +222,7 @@ class Challenge:
 
         word_dict = ['bicycle', 'motorcycle', 'train', 'truck', 'car', 'seaplane', 'boat', 'motorbus']
 
-        self.question = data["requester_question"]["en"].split(' ')[-1]
+        self.question_ = data["requester_question"]["en"].split(' ')[-1]
 
         for _ in word_dict: 
             for __ in list(string.ascii_lowercase): 
