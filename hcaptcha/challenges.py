@@ -222,6 +222,7 @@ class Challenge:
 
         word_dict = ['bicycle', 'motorcycle', 'train', 'truck', 'car', 'seaplane', 'boat', 'motorbus']
 
+        self.question = data["requester_question"]
         self.question_ = data["requester_question"]["en"].split(' ')[-1]
 
         for _ in word_dict: 
