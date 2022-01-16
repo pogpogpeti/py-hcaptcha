@@ -58,6 +58,7 @@ class Challenge:
         self._proof_data = None
         self._answers = []
         self.model = model
+        self._http_client = http_client or HTTPClient(**http_kwargs)
 
         self._agent = agent or random_agent()
         self.image_detection = image_detection
@@ -267,14 +268,14 @@ class Challenge:
             sec_mode=sec_mode,
             sec_dest=sec_dest)
 
-        resp = httpx.request(method=method, url=url, headers=headers, data=body)
+        resp = self._http_client(method=method, url=url, headers=headers, body=body)
         data = resp.read()
 
-        #if (encoding := resp.headers.get("content-encoding")):
-        #    if encoding == "gzip":
-        #        data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
+        if (encoding := resp.headers.get("content-encoding")):
+            if encoding == "gzip":
+                data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
 
-        if resp.status_code > 403:
+        if resp.status > 403:
             raise RequestRejected(
                 f"Unrecognized status code: {resp.status}: {resp.reason}")
 
