@@ -1,6 +1,6 @@
 # py-hcaptcha
-Forked h-captcha solver made by @h0nde
-Made for a discord token generator, but can be used for everything.
+Forked HCaptcha solver \n
+Originally made by https://github.com/h0nde/
 
 # Install
 ```bash
