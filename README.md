@@ -6,6 +6,7 @@ Made for a discord token generator, but can be used for everything.
 * Must download ChromeDriver according to your Chrome ver. and put it in PATH or in the script folder.
 * PyTorch
 * Selenium
+* numpy
 ```bash
 pip install -U git+https://github.com/pogpogpeti/py-hcaptcha --upgrade
 ```
