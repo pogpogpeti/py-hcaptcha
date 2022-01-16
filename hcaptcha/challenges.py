@@ -226,8 +226,8 @@ class Challenge:
 
         for _ in word_dict: 
             for __ in list(string.ascii_lowercase): 
-                obj2 = re.sub('[^\x00-\x7F]', __, self.question)
-                if obj2 == _: self.question = _
+                obj2 = re.sub('[^\x00-\x7F]', __, self.question_)
+                if obj2 == _: self.question_ = _
         self.tiles = [
             Tile(id=info["task_key"],
                  image_url=info["datapoint_uri"],
