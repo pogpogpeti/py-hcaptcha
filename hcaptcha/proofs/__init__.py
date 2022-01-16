@@ -1,7 +1,7 @@
 from . import hsl
 from . import hsw
 
-def get_proof(type, data, hsw):
+def get_proof(type, data, hsw: str):
     if type == "hsl":
         return hsl.get_proof(data)
     elif type == "hsw":
