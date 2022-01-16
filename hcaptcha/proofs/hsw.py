@@ -1,6 +1,7 @@
 import random
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+import os
 options = Options()
 options.headless = True
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
