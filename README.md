@@ -13,7 +13,7 @@ pip install -U git+https://github.com/pogpogpeti/py-hcaptcha --upgrade
 * numpy
 
 # Usage Example
-```bash
+```py
 def get_captcha():
     while True:
         ch = None
