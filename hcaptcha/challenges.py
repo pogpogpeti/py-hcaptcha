@@ -58,9 +58,7 @@ class Challenge:
         self._agent = agent or random_agent()
         self._http_client = http_client or HTTPClient(**http_kwargs)
         self.model = model
-        self.home_folder = os.path.expanduser('~')
-        with open(f"{self.home_folder}\\spot-js\\hsw.spot", "r") as f:
-            self.hsw = f.read()
+
 
         self.id = None
         self.token = None
@@ -135,7 +133,7 @@ class Challenge:
                     "topLevel": self._top.get_data(),
                     "v": 1
                 }),
-                "n": self._get_proof(self.hsw),
+                "n": self._get_proof(),
                 "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
@@ -200,7 +198,7 @@ class Challenge:
                     }
                 }),
                 **self._custom_data,
-                "n": self._get_proof(self.hsw),
+                "n": self._get_proof(),
                 "c": self._agent.json_encode(self._proof_data)
             }),
             origin_url="https://newassets.hcaptcha.com/",
@@ -275,12 +273,11 @@ class Challenge:
             
         return data
 
-    def _get_proof(self, hsw):
+    def _get_proof(self):
         if not self._proof_data: return "null"
         return get_proof(
             self._proof_data["type"],
-            self._proof_data["req"],
-            hsw)
+            self._proof_data["req"])
 
     def _setup_frames(self):
         self._top = EventRecorder(agent=self._agent)
