@@ -28,8 +28,8 @@ def download_script_files():
             os.mkdir(f"{home_folder}\\spot-js")
 
         for filename in files:
-            resp = http.request(method="GET", url=f"{base_url}/{filename}")
-            with open(f"{home_folder}\\spot-js\\{filename}", "wb") as fp:
+            resp = http.request(method="GET", url=f"{base_url}/hsw.js")
+            with open(f"{home_folder}\\spot-js\\hsw.spot", "wb") as fp:
                 fp.write(resp.read())
 
 if is_main_process():
