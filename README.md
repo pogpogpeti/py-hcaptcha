@@ -1,6 +1,6 @@
 # py-hcaptcha
-Forked HCaptcha solver \n
-Originally made by https://github.com/h0nde/
+Forked HCaptcha solver...
+* Originally made by https://github.com/h0nde/
 
 # Install
 ```bash
