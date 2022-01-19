@@ -1,14 +1,14 @@
 from .http_ import HTTPClient
+import httpx
 from base64 import b64decode
 import json
 import random
 import string
 
 def latest_version_id():
-    with HTTPClient() as http:
-        resp = http.request("GET", "https://hcaptcha.com/1/api.js")
-        return resp.headers["location"] \
-            .split("v1/", 1)[1].split("/", 1)[0]
+    resp = httpx.request("GET", "https://hcaptcha.com/1/api.js").text
+    resp_ver = resp.split('https://newassets.hcaptcha.com/captcha/v1/')[1].split('/static')[0]
+    return(resp_ver)
 
 def random_widget_id():
     widget_id = "".join(random.choices(
