@@ -12,12 +12,8 @@ from typing import Iterator, List, Union
 import json
 import ssl
 import zlib
-import torch
 import os
 import string, re
-
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s',
-           pretrained=True, force_reload=True)
 
 class Challenge:
     _version_id = latest_version_id()
@@ -34,7 +30,6 @@ class Challenge:
         self,
         site_key: str,
         site_url: str,
-        image_detection: bool,
         data: Union[dict, None] = None,
         agent: Agent = None,
         http_client: HTTPClient = None,
@@ -56,11 +51,9 @@ class Challenge:
         self._widget_id = random_widget_id()
         self._proof_data = None
         self._answers = []
-        self.model = model
         self._http_client = http_client or HTTPClient(**http_kwargs)
 
         self._agent = agent or random_agent()
-        self.image_detection = image_detection
 
 
         self.id = None
@@ -75,20 +68,6 @@ class Challenge:
         self._validate_config()
         self._get_captcha()
         self._frame.set_data("dct", self._frame._manifest["st"])
-        if self.image_detection == True:
-            self.define_images()
-            
-    def define_images(self):
-        for tile in self.tiles:
-            try:
-                self.result = self.model(tile.image_url).pandas().xyxy[0]
-                for _ in self.result.name[:3]:
-                    if _ == self.question_: self.result = _; break
-                    if _ != self.question_: self.result = None
-            except: self.result = None
-            try:
-                if self.result: self.answer(tile)
-            except: pass
         
     def __iter__(self) -> Iterator[Tile]:
         """Iterates over the challenge's tiles."""
